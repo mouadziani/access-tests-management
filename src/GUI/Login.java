@@ -7,38 +7,29 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+import controller.AuthController;
 
 public class Login extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Login frame = new Login();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private JTextField txt_email;
+	private JTextField txt_password;
 
 	/**
 	 * Create the frame.
 	 */
 	public Login() {
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 366, 227);
 		contentPane = new JPanel();
@@ -54,15 +45,15 @@ public class Login extends JFrame {
 		lblEmail.setBounds(43, 37, 99, 27);
 		contentPane.add(lblEmail);
 		
-		textField = new JTextField();
-		textField.setBounds(152, 35, 166, 26);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		txt_email = new JTextField();
+		txt_email.setBounds(152, 35, 166, 26);
+		contentPane.add(txt_email);
+		txt_email.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(152, 75, 166, 26);
-		contentPane.add(textField_1);
+		txt_password = new JTextField();
+		txt_password.setColumns(10);
+		txt_password.setBounds(152, 75, 166, 26);
+		contentPane.add(txt_password);
 		
 		JLabel lblMotDePasse = new JLabel("Mot de passe");
 		lblMotDePasse.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -71,8 +62,26 @@ public class Login extends JFrame {
 		lblMotDePasse.setBounds(43, 77, 89, 27);
 		contentPane.add(lblMotDePasse);
 		
-		JButton btnNewButton = new JButton("Connecter");
-		btnNewButton.setBounds(43, 129, 275, 32);
-		contentPane.add(btnNewButton);
+		JButton btn_login = new JButton("Connecter");
+		btn_login.setBounds(43, 129, 275, 32);
+		contentPane.add(btn_login);
+		/* 
+		 * Clicked on login button
+		 * */
+		btn_login.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					boolean result = AuthController.login(txt_email.getText(), txt_password.getText());
+					if(result) {
+						System.out.println(result + "Success");
+					} else {
+						System.out.println(result);
+					}
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
+		});
+		
 	}
 }
