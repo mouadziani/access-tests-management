@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.security.auth.login.LoginContext;
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -21,6 +22,10 @@ import controller.AuthController;
 
 public class Login extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txt_email;
 	private JTextField txt_password;
@@ -70,12 +75,14 @@ public class Login extends JFrame {
 		 * */
 		btn_login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				Login login = new Login();
 				try {
 					boolean result = AuthController.login(txt_email.getText(), txt_password.getText());
 					if(result) {
-						System.out.println(result + "Success");
+						
+						JOptionPane.showMessageDialog(login, "test");
 					} else {
-						System.out.println(result);
+						JOptionPane.showMessageDialog(login, "test");
 					}
 				} catch (Exception e) {
 					System.out.println(e.getMessage());

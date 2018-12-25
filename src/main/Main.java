@@ -3,6 +3,7 @@ package main;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import GUI.ImportCandidat;
 import GUI.Login;
 
 public class Main {
@@ -15,7 +16,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		Login main = new Login();
+		ImportCandidat main = new ImportCandidat();
 		main.setVisible(true);
 	}
 

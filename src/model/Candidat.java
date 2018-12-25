@@ -3,8 +3,8 @@ package model;
 public class Candidat {
 	
 	private Integer id;
-	private String nom;
 	private String num;
+	private String nom;
 	private String prenom;
 	private String etablissement;
 	private String ville;
@@ -21,12 +21,11 @@ public class Candidat {
 		super();
 	}
 
-	public Candidat(String nom, String num, String prenom, String etablissement, String ville,
-			String diplome, String type_diplome, String specialite, double note_dossier, double note_test_ecrit,
-			double passe_ecrit, double passe_orale, Jury jury) {
+	public Candidat(String num, String nom, String prenom, String etablissement, String ville,
+			String diplome, String type_diplome, String specialite, double note_dossier) {
 		super();
-		this.nom = nom;
 		this.num = num;
+		this.nom = nom;
 		this.prenom = prenom;
 		this.etablissement = etablissement;
 		this.ville = ville;
@@ -34,10 +33,6 @@ public class Candidat {
 		this.type_diplome = type_diplome;
 		this.specialite = specialite;
 		this.note_dossier = note_dossier;
-		this.note_test_ecrit = note_test_ecrit;
-		this.passe_ecrit = passe_ecrit;
-		this.passe_orale = passe_orale;
-		this.jury = jury;
 	}
 
 	public Integer getId() {
@@ -151,4 +146,12 @@ public class Candidat {
 	public void setJury(Jury jury) {
 		this.jury = jury;
 	}
+
+	@Override
+	public String toString() {
+		return "Candidat [id=" + id + ", num=" + num + ", nom=" + nom + ", prenom=" + prenom + ", etablissement="
+				+ etablissement + ", ville=" + ville + ", diplome=" + diplome + ", type_diplome=" + type_diplome
+				+ ", specialite=" + specialite + ", note_dossier=" + note_dossier + "]";
+	}
+	
 }
