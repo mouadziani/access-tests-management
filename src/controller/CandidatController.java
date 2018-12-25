@@ -43,11 +43,6 @@ import model.Candidat;
 
 public class CandidatController {
 	
-	private String path;
-	private String content;
-	private PdfWriter pdfWrite;
-	private Document doc;
-	
 	public static ArrayList<Candidat> importCandidats(File file) throws FileNotFoundException, IOException, SQLException {
 	    ArrayList<Candidat> candidats = new ArrayList<Candidat>();
 	    POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(file));

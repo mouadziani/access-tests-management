@@ -63,4 +63,12 @@ public class Professeur {
 	public void setJury(Jury jury) {
 		this.jury = jury;
 	}
+
+	@Override
+	public String toString() {
+		return "Professeur [id=" + id + ", nom=" + nom + ", prenom=" + prenom + ", email=" + email + ", password="
+				+ password + ", jury=" + jury + "]";
+	}
+	
+	
 }
