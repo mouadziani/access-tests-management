@@ -1,6 +1,6 @@
 package model;
 
-public class Candidat {
+public class Candidat implements Comparable<Candidat> {
 	
 	private Integer id;
 	private String num;
@@ -152,6 +152,11 @@ public class Candidat {
 		return "Candidat [id=" + id + ", num=" + num + ", nom=" + nom + ", prenom=" + prenom + ", etablissement="
 				+ etablissement + ", ville=" + ville + ", diplome=" + diplome + ", type_diplome=" + type_diplome
 				+ ", specialite=" + specialite + ", note_dossier=" + note_dossier + "]";
+	}
+
+	@Override
+	public int compareTo(Candidat o) {
+		return Double.compare(this.getNote_dossier(), o.getNote_dossier());
 	}
 	
 }

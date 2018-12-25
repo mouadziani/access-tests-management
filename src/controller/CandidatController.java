@@ -1,6 +1,9 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -76,9 +79,9 @@ public class CandidatController {
 		}
 	}
 	
-	public static ArrayList<Candidat> getAllCandidats() throws SQLException {
-		ArrayList<Candidat> candidats = new ArrayList<>();
-		String stmt = "SELECT * FROM candidats";
+	public static LinkedList<Candidat> getAllCandidats() throws SQLException {
+		LinkedList<Candidat> candidats = new LinkedList<>();
+		String stmt = "SELECT * FROM candidats ORDER BY nom";
 		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
 		ResultSet rs = ps.executeQuery();
 		while(rs.next()) {
@@ -130,6 +133,35 @@ public class CandidatController {
 			diplomeTypes.add(rs.getString(1));
 		} 
 		return diplomeTypes;
+	}
+	
+	public static LinkedList<Candidat> getCandidatsTestEcriteParNbr(int nbCandidats) throws Exception {
+		LinkedList<Candidat> candidats = new LinkedList<>();
+		String stmt = "SELECT porc_ecrit_non_lmd, porc_ecrit_lmd, porc_ecrit_ista, porc_ecrit_cp FROM parametrages LIMIT 1";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			double pourcentageLMD = rs.getDouble("porc_ecrit_lmd");
+			double pourcentageNonLMD = rs.getDouble("porc_ecrit_non_lmd");
+			double pourcentageISTA = rs.getDouble("porc_ecrit_ista");
+			double pourcentageCP = rs.getDouble("porc_ecrit_cp");
+		} 
+		LinkedList candidatsLMD = new LinkedList<>();
+		LinkedList candidatsNonLMD = new LinkedList<>();
+		LinkedList candidatsIsta = new LinkedList<>();
+		LinkedList candidatsCP = new LinkedList<>();
+		for(Candidat candidat: getAllCandidats()) {
+			if(candidat.getType_diplome().equals("LMD") ) {
+				candidatsLMD.add(candidat);
+			} else if (candidat.getType_diplome().equals("Non LMD")) {
+				candidatsNonLMD.add(candidat);
+			} else if (candidat.getType_diplome().equals("ISTA")) {
+				candidatsIsta.add(candidat);
+			} else if (candidat.getType_diplome().equals("CPGE")) {
+				candidatsCP.add(candidat);
+			}
+		}
+		return candidats;
 	}
 
 }

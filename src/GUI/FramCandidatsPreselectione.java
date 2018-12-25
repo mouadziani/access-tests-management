@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.awt.event.ActionEvent;
 import javax.swing.UIManager;
 import javax.swing.JLabel;
@@ -103,7 +104,7 @@ public class FramCandidatsPreselectione extends JFrame {
 		panel.add(btn_filtrer);
 
 		// Initialise table candidats
-		ArrayList<Candidat> candidats = CandidatController.getAllCandidats();
+		LinkedList<Candidat> candidats = CandidatController.getAllCandidats();
 		for(Candidat candidat: candidats) {
 			Object[] data = {candidat.getNum(), candidat.getNom(), candidat.getPrenom(), candidat.getVille(), candidat.getEtablissement(), candidat.getType_diplome(), candidat.getDiplome(), candidat.getSpecialite(), candidat.getNote_dossier()};         
 			tblCandidatModel.addRow(data);

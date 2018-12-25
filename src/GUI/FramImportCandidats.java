@@ -33,13 +33,13 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 
-public class ImportCandidat extends JFrame {
+public class FramImportCandidats extends JFrame {
 	private JTable tbl_candidats;
 
 	/**
 	 * Create the frame.
 	 */
-	public ImportCandidat() {
+	public FramImportCandidats() {
 		getContentPane().setBackground(UIManager.getColor("Button.background"));
 		getContentPane().setForeground(Color.WHITE);
 		setForeground(Color.WHITE);
