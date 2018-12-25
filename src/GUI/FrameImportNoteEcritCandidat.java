@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.awt.event.ActionEvent;
 import javax.swing.UIManager;
@@ -80,10 +81,11 @@ public class FrameImportNoteEcritCandidat extends JFrame {
 		lblNewLabel.setBounds(10, 23, 467, 25);
 		getContentPane().add(lblNewLabel);
 		
-		/* ==== Actions ==== */
 		// Clicked on importer
-		btn_importer.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+		btn_importer.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
 				String path = "";
 				JFileChooser jf = new JFileChooser();
 				jf.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -92,7 +94,10 @@ public class FrameImportNoteEcritCandidat extends JFrame {
 		        	File file = jf.getSelectedFile();
 		        	try {
 		        		LinkedList<Candidat> candidats = NoteCondidatController.importNoteEcriteCandidats(file);
-		        		
+		        		for(Candidat candidat: candidats) {
+		        			Object[] data = {candidat.getNum(), candidat.getNom(), candidat.getPrenom(), candidat.getVille(), candidat.getEtablissement(), candidat.getType_diplome(), candidat.getDiplome(), candidat.getSpecialite(), candidat.getNote_dossier(), candidat.getNote_test_ecrit()};         
+		        			tblCandidatModel.addRow(data);
+		        		}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -101,28 +106,20 @@ public class FrameImportNoteEcritCandidat extends JFrame {
 		});
 		
 		// Clicked on enregistrer
-		btn_enregistrer.addActionListener(new ActionListener() {
+		btn_enregistrer.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				try {
-					ArrayList<Candidat> candidats = new ArrayList<>();
-					for (int count = 0; count < tbl_candidats.getRowCount(); count++) {
-						Candidat candidat = new Candidat(tbl_candidats.getValueAt(count, 0).toString(), 
-														 tbl_candidats.getValueAt(count, 1).toString(), 
-														 tbl_candidats.getValueAt(count, 2).toString(), 
-														 tbl_candidats.getValueAt(count, 4).toString(), 
-														 tbl_candidats.getValueAt(count, 3).toString(), 
-														 tbl_candidats.getValueAt(count, 6).toString(), 
-														 tbl_candidats.getValueAt(count, 5).toString(), 
-														 tbl_candidats.getValueAt(count, 7).toString(), 
-														 Double.parseDouble(tbl_candidats.getValueAt(count, 8).toString()));
-						candidats.add(candidat);
-					}
-					
-					CandidatController.saveCandidats(candidats);
-					JOptionPane.showMessageDialog(null, "Les condidats est bien enregistrés !");
+				HashMap<String, Double> candidats = new HashMap<String, Double>();
+				for (int i = 0; i < tbl_candidats.getRowCount(); i++) {
+					System.out.println(tbl_candidats.getValueAt(i, 0).toString() + " - " + tbl_candidats.getValueAt(i, 9).toString());
+					candidats.put(tbl_candidats.getValueAt(i, 0).toString(), Double.parseDouble(tbl_candidats.getValueAt(i, 9).toString()));
+				}
 				
-				} catch (Exception ex) {
+				try {
+					NoteCondidatController.updateNoteCandidats(candidats);
+					JOptionPane.showMessageDialog(null, "Les notes condidats est bien modifié !");
+				} catch (SQLException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 			}
