@@ -88,7 +88,7 @@ public class FramCandidatsPasseEcrite extends JFrame {
 		panel.add(txt_nb_candidats);
 		txt_nb_candidats.setColumns(10);
 		
-		JButton btn_enregister = new JButton("Enregistrer");
+		JButton btn_enregister = new JButton("Enregistrer");		
 		btn_enregister.setBounds(732, 480, 152, 30);
 		getContentPane().add(btn_enregister);
 		
@@ -106,6 +106,62 @@ public class FramCandidatsPasseEcrite extends JFrame {
 			Object[] data = {candidat.getNum(), candidat.getNom(), candidat.getPrenom(), candidat.getVille(), candidat.getEtablissement(), candidat.getType_diplome(), candidat.getDiplome(), candidat.getSpecialite(), candidat.getNote_dossier()};         
 			tblCandidatModel.addRow(data);
 		}
+		
+		/* === Actions === */	
+		// Clicked on filtrer
+		btn_filtrer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					if(txt_nb_candidats.getText().equals("")) {
+						JOptionPane.showMessageDialog(null, "Vuilez remplie le champ pour filteré !");
+					} else {
+						LinkedList<Candidat> filtredCandidats = CandidatController.getCandidatsTestEcriteParNbr(Integer.parseInt(txt_nb_candidats.getText()));
+						tblCandidatModel.setRowCount(0);
+						for(Candidat candidat: filtredCandidats) {
+							Object[] data = {candidat.getNum(), candidat.getNom(), candidat.getPrenom(), candidat.getVille(), candidat.getEtablissement(), candidat.getType_diplome(), candidat.getDiplome(), candidat.getSpecialite(), candidat.getNote_dossier()};         
+							tblCandidatModel.addRow(data);
+						}
+					}
+					
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, e.getMessage());
+				}
+			}
+		});
+		
+		// Clicked on enregistrer
+		btn_enregister.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					ArrayList<String> numCandidates = new ArrayList<>();
+					for (int i = 0; i < tbl_candidats.getRowCount(); i++) {
+						numCandidates.add(tbl_candidats.getValueAt(i, 0).toString());
+						CandidatController.savePassedTestCandidats(numCandidates);
+					}
+					JOptionPane.showMessageDialog(null, "Les condidats est bien enregistrés !");
+				
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(null, ex.getMessage());
+				}
+			}
+		});
+		
+		// Clicked on supprimer
+		btn_supprimer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int answer = JOptionPane.showConfirmDialog(null, "Voulez vous vraiment supprimer ?");
+		        if(answer == 0) {
+		        	// remove selected condidats from table
+		        	DefaultTableModel model = (DefaultTableModel) tbl_candidats.getModel();
+		        	int[] rows = tbl_candidats.getSelectedRows();
+		        	for(int i=0; i< rows.length; i++) {
+		        		model.removeRow(rows[i]-i);
+		        	}
+		        	JOptionPane.showMessageDialog(null, "Les condidats selectinne est bien supprimé !");
+		        }
+			}
+		});
 	}
 }
 

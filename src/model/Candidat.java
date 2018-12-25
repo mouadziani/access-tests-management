@@ -156,7 +156,7 @@ public class Candidat implements Comparable<Candidat> {
 
 	@Override
 	public int compareTo(Candidat o) {
-		return Double.compare(this.getNote_dossier(), o.getNote_dossier());
+		return -Double.compare(this.getNote_dossier(), o.getNote_dossier());
 	}
 	
 }

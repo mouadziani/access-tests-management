@@ -3,7 +3,10 @@ package controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
+
+import javax.xml.soap.Node;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -140,16 +143,20 @@ public class CandidatController {
 		String stmt = "SELECT porc_ecrit_non_lmd, porc_ecrit_lmd, porc_ecrit_ista, porc_ecrit_cp FROM parametrages LIMIT 1";
 		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
 		ResultSet rs = ps.executeQuery();
+		double pourcentageLMD = 0;
+		double pourcentageNonLMD = 0;
+		double pourcentageISTA = 0;
+		double pourcentageCP = 0;
 		while(rs.next()) {
-			double pourcentageLMD = rs.getDouble("porc_ecrit_lmd");
-			double pourcentageNonLMD = rs.getDouble("porc_ecrit_non_lmd");
-			double pourcentageISTA = rs.getDouble("porc_ecrit_ista");
-			double pourcentageCP = rs.getDouble("porc_ecrit_cp");
+			pourcentageLMD = rs.getDouble("porc_ecrit_lmd");
+			pourcentageNonLMD = rs.getDouble("porc_ecrit_non_lmd");
+			pourcentageISTA = rs.getDouble("porc_ecrit_ista");
+			pourcentageCP = rs.getDouble("porc_ecrit_cp");
 		} 
-		LinkedList candidatsLMD = new LinkedList<>();
-		LinkedList candidatsNonLMD = new LinkedList<>();
-		LinkedList candidatsIsta = new LinkedList<>();
-		LinkedList candidatsCP = new LinkedList<>();
+		LinkedList<Candidat> candidatsLMD = new LinkedList<>();
+		LinkedList<Candidat> candidatsNonLMD = new LinkedList<>();
+		LinkedList<Candidat> candidatsIsta = new LinkedList<>();
+		LinkedList<Candidat> candidatsCP = new LinkedList<>();
 		for(Candidat candidat: getAllCandidats()) {
 			if(candidat.getType_diplome().equals("LMD") ) {
 				candidatsLMD.add(candidat);
@@ -161,7 +168,61 @@ public class CandidatController {
 				candidatsCP.add(candidat);
 			}
 		}
+
+		Collections.sort(candidatsLMD);
+		Collections.sort(candidatsNonLMD);
+		Collections.sort(candidatsIsta);
+		Collections.sort(candidatsCP);
+		
+		int nbLmd = (int)((nbCandidats * pourcentageLMD) / 100);
+		int nbNonLmd = (int)((nbCandidats * pourcentageNonLMD) / 100);
+		int nbIsta = (int)((nbCandidats * pourcentageISTA) / 100);
+		int nbCP = (int)((nbCandidats * pourcentageCP) / 100);
+		
+		for(Candidat candidat: getFirstNCandidats(candidatsLMD, nbLmd)) {
+			candidats.add(candidat);
+		}
+		
+		for(Candidat candidat: getFirstNCandidats(candidatsNonLMD, nbNonLmd)) {
+			candidats.add(candidat);
+		}
+		
+		for(Candidat candidat: getFirstNCandidats(candidatsIsta, nbIsta)) {
+			candidats.add(candidat);
+		}
+		
+		for(Candidat candidat: getFirstNCandidats(candidatsCP, nbCP)) {
+			candidats.add(candidat);
+		}
+		
 		return candidats;
+	}
+	
+	 public static LinkedList<Candidat> getFirstNCandidats(LinkedList<Candidat> candidats, int nbr) {
+		 LinkedList<Candidat> firstNCandidats = new LinkedList<Candidat>();
+		 nbr = (candidats.size() < nbr) ? candidats.size() : nbr;
+		 for(int i = 0; i < nbr; i++) {
+			 firstNCandidats.add(candidats.get(i));
+		 }
+		 return firstNCandidats;
+	 }
+	 
+	 public static void savePassedTestCandidats(ArrayList<String> numCandidates) throws SQLException {
+		 // Initialise pass_ecrite for all candidate with false
+		 String stmt = "UPDATE candidats SET passe_ecrit  = 0";
+		 PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		 ps.executeUpdate();
+		 ps.close();
+		 
+		 // Set true of pass_ecrite just for candidates collection 				 
+		 for(String numCandidat: numCandidates) {
+			 stmt = "UPDATE candidats SET passe_ecrit = 1 WHERE num = ?";
+			 ps = SingletonConnection.getConnection().prepareStatement(stmt);
+			 ps.setString(1, numCandidat);
+			 ps.executeUpdate();
+		 }
+		 
+		 ps.close();
 	}
 
 }

@@ -9,6 +9,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import GUI.FramCandidatsPasseEcrite;
 import GUI.FramCandidatsPreselectione;
 import GUI.FramImportCandidats;
+import GUI.FrameImportNoteEcritCandidat;
 import GUI.Login;
 
 public class Main {
@@ -21,7 +22,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		FramCandidatsPasseEcrite main = new FramCandidatsPasseEcrite();
+		FrameImportNoteEcritCandidat main = new FrameImportNoteEcritCandidat();
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		main.setLocation(dim.width/2-main.getSize().width/2, dim.height/2-main.getSize().height/2);
 		main.setVisible(true);
