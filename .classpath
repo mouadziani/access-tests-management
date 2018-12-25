@@ -17,5 +17,6 @@
 	<classpathentry kind="lib" path="lib/poi-ooxml-4.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-4.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/poi-scratchpad-4.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/itextpdf-5.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

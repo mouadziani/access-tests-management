@@ -3,8 +3,19 @@ package controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import javax.xml.soap.Node;
 
@@ -13,12 +24,16 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.ConditionFilterData;
+
+import com.itextpdf.text.pdf.PdfWriter;
 
 import helpers.SingletonConnection;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +42,11 @@ import java.sql.SQLException;
 import model.Candidat;
 
 public class CandidatController {
+	
+	private String path;
+	private String content;
+	private PdfWriter pdfWrite;
+	private Document doc;
 	
 	public static ArrayList<Candidat> importCandidats(File file) throws FileNotFoundException, IOException, SQLException {
 	    ArrayList<Candidat> candidats = new ArrayList<Candidat>();
@@ -198,7 +218,7 @@ public class CandidatController {
 		return candidats;
 	}
 	
-	 public static LinkedList<Candidat> getFirstNCandidats(LinkedList<Candidat> candidats, int nbr) {
+	public static LinkedList<Candidat> getFirstNCandidats(LinkedList<Candidat> candidats, int nbr) {
 		 LinkedList<Candidat> firstNCandidats = new LinkedList<Candidat>();
 		 nbr = (candidats.size() < nbr) ? candidats.size() : nbr;
 		 for(int i = 0; i < nbr; i++) {
@@ -207,7 +227,7 @@ public class CandidatController {
 		 return firstNCandidats;
 	 }
 	 
-	 public static void savePassedTestCandidats(ArrayList<String> numCandidates) throws SQLException {
+	public static void savePassedTestCandidats(ArrayList<String> numCandidates) throws SQLException {
 		 // Initialise pass_ecrite for all candidate with false
 		 String stmt = "UPDATE candidats SET passe_ecrit  = 0";
 		 PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
@@ -223,6 +243,44 @@ public class CandidatController {
 		 }
 		 
 		 ps.close();
+	}
+	 
+	public static void exportCandidats(LinkedList<Candidat> candidats, String path) throws FileNotFoundException, DocumentException {
+	  Document document = new Document();
+	  PdfPTable table = new PdfPTable(9);
+	  // Generate header
+	  table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+	  table.addCell("N° Candidat");
+	  table.addCell("Nom");
+	  table.addCell("Prenom");
+	  table.addCell("Ville");
+	  table.addCell("Etablissement");
+	  table.addCell("Type de diplome");
+	  table.addCell("Diplome");
+	  table.addCell("Specialité");
+	  table.addCell("Note dossier");
+	  table.setHeaderRows(1);
+	  PdfPCell[] cells = table.getRow(0).getCells(); 
+	  for (int j = 0; j < cells.length; j++) {
+	     cells[j].setBackgroundColor(BaseColor.GRAY);
+	  }
+	  
+	  for (Candidat candidat: candidats){
+		  table.addCell(candidat.getNum());
+		  table.addCell(candidat.getNom());
+		  table.addCell(candidat.getPrenom());
+		  table.addCell(candidat.getVille());
+		  table.addCell(candidat.getEtablissement());
+		  table.addCell(candidat.getType_diplome());
+		  table.addCell(candidat.getDiplome());
+		  table.addCell(candidat.getSpecialite());
+		  table.addCell(String.valueOf(candidat.getNote_dossier()));
+	  }
+	  
+	  PdfWriter.getInstance(document, new FileOutputStream(path));
+	  document.open();
+	  document.add(table);
+	  document.close();
 	}
 
 }
