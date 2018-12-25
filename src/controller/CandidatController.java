@@ -8,16 +8,21 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
+import helpers.SingletonConnection;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import model.Candidat;
 
 public class CandidatController {
 	
-	public static ArrayList<Candidat> importCandidats(File file) throws FileNotFoundException, IOException {
+	public static ArrayList<Candidat> importCandidats(File file) throws FileNotFoundException, IOException, SQLException {
 	    ArrayList<Candidat> candidats = new ArrayList<Candidat>();
 	    POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(file));
 	    HSSFWorkbook wb = new HSSFWorkbook(fs);
@@ -51,6 +56,80 @@ public class CandidatController {
 	    }
 
 	    return candidats;
+	}
+	
+	public static void saveCandidats(ArrayList<Candidat> candidats) throws SQLException {
+		String stmt = "INSERT INTO `access_tests_managment_db`.`candidats` (`num`, `nom`, `prenom`, `etablissement`, `ville`, `type_diplome`, `diplome`, `specialite`, `note_dossier`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		for(Candidat candidat: candidats) {
+			PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+			ps.setString(1, candidat.getNum());
+			ps.setString(2, candidat.getNom());
+			ps.setString(3, candidat.getPrenom());
+			ps.setString(4, candidat.getEtablissement());
+			ps.setString(5, candidat.getVille());
+			ps.setString(6, candidat.getType_diplome());
+			ps.setString(7, candidat.getDiplome());
+			ps.setString(8, candidat.getSpecialite());
+			ps.setDouble(9, candidat.getNote_dossier());
+			ps.executeUpdate();
+			ps.close();
+		}
+	}
+	
+	public static ArrayList<Candidat> getAllCandidats() throws SQLException {
+		ArrayList<Candidat> candidats = new ArrayList<>();
+		String stmt = "SELECT * FROM candidats";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			Candidat candidat = new Candidat(rs.getString(2), 
+											 rs.getString(3), 
+											 rs.getString(4), 
+											 rs.getString(5), 
+											 rs.getString(6), 
+											 rs.getString(8), 
+											 rs.getString(7), 
+											 rs.getString(9), 
+											 rs.getDouble(10));
+			candidats.add(candidat);
+		} 
+		return candidats;
+	}
+	
+	public static ArrayList<String> getDiplomes() throws SQLException {
+		ArrayList<String> diplomes = new ArrayList<>();
+		String stmt = "SELECT DISTINCT(diplome) FROM candidats";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		diplomes.add("<< Tous >>");
+		while(rs.next()) {
+			diplomes.add(rs.getString(1));
+		} 
+		return diplomes;
+	}
+	
+	public static ArrayList<String> getSpecialites() throws SQLException {
+		ArrayList<String> specialites = new ArrayList<>();
+		String stmt = "SELECT DISTINCT(specialite) FROM candidats";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		specialites.add("<< Tous >>");
+		while(rs.next()) {
+			specialites.add(rs.getString(1));
+		} 
+		return specialites;
+	}
+	
+	public static ArrayList<String> getDiplomeTypes() throws SQLException {
+		ArrayList<String> diplomeTypes = new ArrayList<>();
+		String stmt = "SELECT DISTINCT(type_diplome) FROM candidats";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		diplomeTypes.add("<< Tous >>");
+		while(rs.next()) {
+			diplomeTypes.add(rs.getString(1));
+		} 
+		return diplomeTypes;
 	}
 
 }
