@@ -10,11 +10,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Toolkit;
+
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.security.auth.login.LoginContext;
 import javax.swing.JButton;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -35,7 +38,7 @@ public class Login extends JFrame {
 	 */
 	public Login() {
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 366, 227);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
@@ -70,19 +73,22 @@ public class Login extends JFrame {
 		JButton btn_login = new JButton("Connecter");
 		btn_login.setBounds(43, 129, 275, 32);
 		contentPane.add(btn_login);
-		/* 
-		 * Clicked on login button
-		 * */
+		
+		/* === Actions=== */
+		// Clicked on connecter
 		btn_login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Login login = new Login();
 				try {
 					boolean result = AuthController.login(txt_email.getText(), txt_password.getText());
 					if(result) {
-						
-						JOptionPane.showMessageDialog(login, "test");
+						login.dispose();
+						FramMain fram = new FramMain();
+						Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+						fram.setLocation(dim.width/2-fram.getSize().width/2, dim.height/2-fram.getSize().height/2);
+						fram.setVisible(true);
 					} else {
-						JOptionPane.showMessageDialog(login, "test");
+						JOptionPane.showMessageDialog(login, "Veuillez réessayer de saisir les informations correct");
 					}
 				} catch (Exception e) {
 					System.out.println(e.getMessage());

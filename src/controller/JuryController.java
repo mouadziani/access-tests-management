@@ -70,7 +70,6 @@ public class JuryController {
 			ps.setInt(1, idJury);
 			ps.setInt(2, candidat.getId());
 			int result = ps.executeUpdate();
-			System.out.println(result + " -------- ");
 		}
 	}
 	
@@ -79,12 +78,10 @@ public class JuryController {
 		String stmt = "SELECT * FROM Juries";
 		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
 		ResultSet rs = ps.executeQuery();
-		System.out.println("her");
 		while(rs.next()) {
 			Jury jury = new Jury(rs.getString(2));
 			jury.setId(rs.getInt(1));
 			juries.add(jury);
-			System.out.println(rs.getInt(1));
 		}
 		ps.close();	
 		return juries;

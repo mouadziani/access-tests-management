@@ -14,6 +14,8 @@ import javax.swing.table.TableModel;
 
 import org.apache.poi.EncryptedDocumentException;
 
+import com.itextpdf.text.DocumentException;
+
 import controller.CandidatController;
 import controller.NoteCondidatController;
 import model.Candidat;
@@ -24,6 +26,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -49,7 +52,7 @@ public class FrameImportNoteEcritCandidat extends JFrame {
 		setTitle("Importation des candidats");
 		setType(Type.POPUP);
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 900, 550);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -112,7 +115,6 @@ public class FrameImportNoteEcritCandidat extends JFrame {
 			{
 				HashMap<String, Double> candidats = new HashMap<String, Double>();
 				for (int i = 0; i < tbl_candidats.getRowCount(); i++) {
-					System.out.println(tbl_candidats.getValueAt(i, 0).toString() + " - " + tbl_candidats.getValueAt(i, 9).toString());
 					candidats.put(tbl_candidats.getValueAt(i, 0).toString(), Double.parseDouble(tbl_candidats.getValueAt(i, 9).toString()));
 				}
 				
@@ -125,5 +127,32 @@ public class FrameImportNoteEcritCandidat extends JFrame {
 			}
 		});
 		
+		btn_imprimer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					JFileChooser dialog = new JFileChooser();
+		            int dialogResult = dialog.showSaveDialog(null);
+		            if (dialogResult==JFileChooser.APPROVE_OPTION){
+		                String filePath = dialog.getSelectedFile().getPath();
+		                LinkedList<Candidat> candidats = new LinkedList<>();
+						for (int count = 0; count < tbl_candidats.getRowCount(); count++) {
+							Candidat candidat = new Candidat(tbl_candidats.getValueAt(count, 0).toString(), 
+															tbl_candidats.getValueAt(count, 1).toString(), 
+															tbl_candidats.getValueAt(count, 2).toString(), 
+															tbl_candidats.getValueAt(count, 4).toString(), 
+															tbl_candidats.getValueAt(count, 3).toString(), 
+															tbl_candidats.getValueAt(count, 6).toString(), 
+															tbl_candidats.getValueAt(count, 5).toString(), 
+															tbl_candidats.getValueAt(count, 7).toString(), 
+															 Double.parseDouble(tbl_candidats.getValueAt(count, 8).toString()));
+							candidats.add(candidat);
+						}
+						CandidatController.exportCandidats(candidats, filePath);
+		            }
+				} catch (FileNotFoundException | DocumentException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage());
+				}
+			}
+		});
 	}
 }

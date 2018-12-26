@@ -40,9 +40,9 @@ public class NoteCondidatController {
             row = sheet.getRow(j);
             String numCurrentCandidat = String.valueOf(row.getCell(0).getNumericCellValue());
             double noteCurrentCandidat = Double.parseDouble(row.getCell(1).getStringCellValue());
-            
-            System.out.println(numCurrentCandidat + " " + noteCurrentCandidat);
-            candidats.add(setNoteEcritToCandidat(numCurrentCandidat, noteCurrentCandidat));
+            if(setNoteEcritToCandidat(numCurrentCandidat, noteCurrentCandidat).getNum() != null) {
+            	candidats.add(setNoteEcritToCandidat(numCurrentCandidat, noteCurrentCandidat));
+            }
         }
         
         return candidats;

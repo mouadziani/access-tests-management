@@ -57,7 +57,7 @@ public class FramResultats extends JFrame {
 		setTitle("Importation des candidats");
 		setType(Type.POPUP);
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 900, 735);
 		getContentPane().setLayout(null);
 		
@@ -80,9 +80,9 @@ public class FramResultats extends JFrame {
 		tbl_candidatsAdmis = new JTable(tblCandidatAdmisModel);
 		scrollPane.setViewportView(tbl_candidatsAdmis);
 		
-		JButton button = new JButton("Exporter en PDF");
-		button.setBounds(712, 296, 152, 30);
-		panel.add(button);
+		JButton btn_export_admis = new JButton("Exporter en PDF");
+		btn_export_admis.setBounds(712, 296, 152, 30);
+		panel.add(btn_export_admis);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
@@ -113,6 +113,62 @@ public class FramResultats extends JFrame {
 			Object[] data = {candidat.getNum(), candidat.getNom(), candidat.getPrenom(), candidat.getVille(), candidat.getEtablissement(), candidat.getType_diplome(), candidat.getDiplome(), candidat.getSpecialite(), candidat.getNote_dossier(), candidat.getNote_test_orale()};         
 			tblCandidatAttModel.addRow(data);
 		}
+		
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					JFileChooser dialog = new JFileChooser();
+		            int dialogResult = dialog.showSaveDialog(null);
+		            if (dialogResult==JFileChooser.APPROVE_OPTION){
+		                String filePath = dialog.getSelectedFile().getPath();
+		                LinkedList<Candidat> candidats = new LinkedList<>();
+						for (int count = 0; count < tbl_candidatsListAtt.getRowCount(); count++) {
+							Candidat candidat = new Candidat(tbl_candidatsListAtt.getValueAt(count, 0).toString(), 
+															 tbl_candidatsListAtt.getValueAt(count, 1).toString(), 
+															 tbl_candidatsListAtt.getValueAt(count, 2).toString(), 
+															 tbl_candidatsListAtt.getValueAt(count, 4).toString(), 
+															 tbl_candidatsListAtt.getValueAt(count, 3).toString(), 
+															 tbl_candidatsListAtt.getValueAt(count, 6).toString(), 
+															 tbl_candidatsListAtt.getValueAt(count, 5).toString(), 
+															 tbl_candidatsListAtt.getValueAt(count, 7).toString(), 
+															 Double.parseDouble(tbl_candidatsListAtt.getValueAt(count, 8).toString()));
+							candidats.add(candidat);
+						}
+						CandidatController.exportCandidats(candidats, filePath);
+		            }
+				} catch (FileNotFoundException | DocumentException e) {
+					JOptionPane.showMessageDialog(null, e.getMessage());
+				}
+			}
+		});
+		
+		btn_export_admis.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					JFileChooser dialog = new JFileChooser();
+		            int dialogResult = dialog.showSaveDialog(null);
+		            if (dialogResult==JFileChooser.APPROVE_OPTION){
+		                String filePath = dialog.getSelectedFile().getPath();
+		                LinkedList<Candidat> candidats = new LinkedList<>();
+						for (int count = 0; count < tbl_candidatsAdmis.getRowCount(); count++) {
+							Candidat candidat = new Candidat(tbl_candidatsAdmis.getValueAt(count, 0).toString(), 
+															 tbl_candidatsAdmis.getValueAt(count, 1).toString(), 
+															 tbl_candidatsAdmis.getValueAt(count, 2).toString(), 
+															 tbl_candidatsAdmis.getValueAt(count, 4).toString(), 
+															 tbl_candidatsAdmis.getValueAt(count, 3).toString(), 
+															 tbl_candidatsAdmis.getValueAt(count, 6).toString(), 
+															 tbl_candidatsAdmis.getValueAt(count, 5).toString(), 
+															 tbl_candidatsAdmis.getValueAt(count, 7).toString(), 
+															 Double.parseDouble(tbl_candidatsAdmis.getValueAt(count, 8).toString()));
+							candidats.add(candidat);
+						}
+						CandidatController.exportCandidats(candidats, filePath);
+		            }
+				} catch (FileNotFoundException | DocumentException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage());
+				}
+			}
+		});
 	}
 }
 

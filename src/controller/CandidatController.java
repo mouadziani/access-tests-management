@@ -13,6 +13,10 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -288,35 +292,35 @@ public class CandidatController {
 	}
 	 
 	public static void exportCandidats(LinkedList<Candidat> candidats, String path) throws FileNotFoundException, DocumentException {
-	  Document document = new Document();
-	  PdfPTable table = new PdfPTable(6);
-	  // Generate header
-	  table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-	  table.addCell("N° Candidat");
-	  table.addCell("Nom");
-	  table.addCell("Prenom");
-	  table.addCell("Type de diplome");
-	  table.addCell("Diplome");
-	  table.addCell("Specialité");
-	  table.setHeaderRows(1);
-	  PdfPCell[] cells = table.getRow(0).getCells(); 
-	  for (int j = 0; j < cells.length; j++) {
-	     cells[j].setBackgroundColor(BaseColor.GRAY);
-	  }
-	  
-	  for (Candidat candidat: candidats){
-		  table.addCell(candidat.getNum());
-		  table.addCell(candidat.getNom());
-		  table.addCell(candidat.getPrenom());
-		  table.addCell(candidat.getType_diplome());
-		  table.addCell(candidat.getDiplome());
-		  table.addCell(candidat.getSpecialite());
-	  }
-	  
-	  PdfWriter.getInstance(document, new FileOutputStream(path));
-	  document.open();
-	  document.add(table);
-	  document.close();
+		Document document = new Document();
+		PdfPTable table = new PdfPTable(6);
+		// Generate header
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.addCell("N° Candidat");
+		table.addCell("Nom");
+		table.addCell("Prenom");
+		table.addCell("Type de diplome");
+		table.addCell("Diplome");
+		table.addCell("Specialité");
+		table.setHeaderRows(1);
+		PdfPCell[] cells = table.getRow(0).getCells(); 
+		for (int j = 0; j < cells.length; j++) {
+			cells[j].setBackgroundColor(BaseColor.GRAY);
+		}
+
+		for (Candidat candidat: candidats){
+			table.addCell(candidat.getNum());
+			table.addCell(candidat.getNom());
+			table.addCell(candidat.getPrenom());
+			table.addCell(candidat.getType_diplome());
+			table.addCell(candidat.getDiplome());
+			table.addCell(candidat.getSpecialite());
+		}
+
+		PdfWriter.getInstance(document, new FileOutputStream(path));
+		document.open();
+		document.add(table);
+		document.close();
 	}
 	
 	public static LinkedList<Candidat> getCandidatsCanPassingOrale() throws SQLException {

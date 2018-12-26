@@ -65,7 +65,7 @@ public class FramGestionJuries extends JFrame {
 		setTitle("Importation des candidats");
 		setType(Type.POPUP);
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 900, 529);
 		getContentPane().setLayout(null);
 		

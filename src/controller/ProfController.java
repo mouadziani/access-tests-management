@@ -35,7 +35,6 @@ public class ProfController {
 	}
 	
 	public static boolean addProfesseur(Professeur professeur) throws Exception {
-		System.out.println(professeur);
 		String stmt = "INSERT INTO professeurs (nom, prenom, email, password) VALUES (?, ?, ?, ?)";
 		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
 		ps.setString(1, professeur.getNom());
