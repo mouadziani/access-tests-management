@@ -425,5 +425,49 @@ public class CandidatController {
 		} 
 		return numCandidats;
 	}
+	
+	public static int getNbPlaceFiliere() throws SQLException {
+		int nbrPlaces = 0;
+		String stmt = "SELECT nbr_places_filiere FROM parametrages LIMIT 1";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			nbrPlaces = rs.getInt(1);
+		}
+		return nbrPlaces;
+	}
+	
+	public static HashMap<Integer, LinkedList<Candidat>> getResultCandidats() throws SQLException {
+		HashMap<Integer, LinkedList<Candidat>> result = new HashMap<>();
+		LinkedList<Candidat> candidatsAdmis = new LinkedList<>();
+		LinkedList<Candidat> candidatsListAtt = new LinkedList<>();
+		String stmt = "SELECT candidats.*, (candidats.note_dossier * parametrages.coef_ndossier_nfinal)  + (candidats.note_test_ecrit * parametrages.coef_necrit_nfinal) + (candidats.note_test_orale * parametrages.coef_noral_nfinal) AS noteFinal FROM candidats, parametrages WHERE passe_ecrit = 1 AND passe_orale = 1  ORDER BY noteFinal DESC";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		int i = 1;
+		while(rs.next()) {
+			Candidat candidat = new Candidat(rs.getString(2), 
+											 rs.getString(3), 
+											 rs.getString(4), 
+											 rs.getString(5), 
+											 rs.getString(6), 
+											 rs.getString(8), 
+											 rs.getString(7), 
+											 rs.getString(9), 
+											 rs.getDouble(10));
+			candidat.setNote_test_ecrit(rs.getDouble(11));
+			candidat.setNote_test_orale(rs.getDouble(12));
+			candidat.setId(rs.getInt(1));
+			if(i <= getNbPlaceFiliere()) {
+				candidatsAdmis.add(candidat);
+			} else {
+				candidatsListAtt.add(candidat);
+			}
+			i++;
+		} 
+		result.put(1, candidatsAdmis);
+		result.put(2, candidatsListAtt);
+		return result;
+	}
 
 }

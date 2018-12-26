@@ -14,6 +14,7 @@ import GUI.FramGestionJuries;
 import GUI.FramGestionProfs;
 import GUI.FramImportCandidats;
 import GUI.FramMain;
+import GUI.FramResultats;
 import GUI.FrameImportNoteEcritCandidat;
 import GUI.Login;
 
@@ -26,7 +27,7 @@ public class Main {
 				| UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		FramCandidatsPassOrale main = new FramCandidatsPassOrale();
+		FramResultats main = new FramResultats();
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		main.setLocation(dim.width/2-main.getSize().width/2, dim.height/2-main.getSize().height/2);
 		main.setVisible(true);
