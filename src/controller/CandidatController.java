@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-
+import java.util.Vector;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import com.itextpdf.text.BaseColor;
@@ -113,6 +113,8 @@ public class CandidatController {
 											 rs.getString(9), 
 											 rs.getDouble(10));
 			candidat.setId(rs.getInt(1));
+			candidat.setNote_test_ecrit(rs.getDouble(11));
+			candidat.setNote_test_orale(rs.getDouble(12));
 			candidats.add(candidat);
 		} 
 		return candidats;
@@ -214,6 +216,32 @@ public class CandidatController {
 		return candidats;
 	}
 	
+	public static LinkedList<Candidat> getCandidatsTestOraleParNbr(int nbCandidats) throws Exception {
+		LinkedList<Candidat> candidats = new LinkedList<>();
+		String stmt = "SELECT * FROM candidats WHERE passe_ecrit = 1 AND note_test_ecrit IS NOT NULL AND note_test_ecrit <> 0 ORDER BY note_test_ecrit DESC";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			if(rs.getDouble(12) > 0) {
+				System.out.println(rs.getDouble(12));
+				Candidat candidat = new Candidat(rs.getString(2), 
+												 rs.getString(3), 
+												 rs.getString(4), 
+												 rs.getString(5), 
+												 rs.getString(6), 
+												 rs.getString(8), 
+												 rs.getString(7), 
+												 rs.getString(9), 
+												 rs.getDouble(10));
+						candidat.setNote_test_ecrit(rs.getDouble(11));
+						candidat.setNote_test_orale(rs.getDouble(12));
+						candidat.setId(rs.getInt(1));
+						candidats.add(candidat);	
+			}
+		} 
+		return getFirstNCandidats(candidats, nbCandidats);
+	}
+	
 	public static LinkedList<Candidat> getFirstNCandidats(LinkedList<Candidat> candidats, int nbr) {
 		 LinkedList<Candidat> firstNCandidats = new LinkedList<Candidat>();
 		 nbr = (candidats.size() < nbr) ? candidats.size() : nbr;
@@ -241,20 +269,35 @@ public class CandidatController {
 		 ps.close();
 	}
 	 
+	public static void savePassedTestOraleCandidats(ArrayList<String> numCandidates) throws SQLException {
+		 // Initialise pass_ecrite for all candidate with false
+		 String stmt = "UPDATE candidats SET passe_orale  = 0";
+		 PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		 ps.executeUpdate();
+		 ps.close();
+		 
+		 // Set true of pass_ecrite just for candidates collection 				 
+		 for(String numCandidat: numCandidates) {
+			 stmt = "UPDATE candidats SET passe_orale = 1 WHERE num = ?";
+			 ps = SingletonConnection.getConnection().prepareStatement(stmt);
+			 ps.setString(1, numCandidat);
+			 ps.executeUpdate();
+		 }
+		 
+		 ps.close();
+	}
+	 
 	public static void exportCandidats(LinkedList<Candidat> candidats, String path) throws FileNotFoundException, DocumentException {
 	  Document document = new Document();
-	  PdfPTable table = new PdfPTable(9);
+	  PdfPTable table = new PdfPTable(6);
 	  // Generate header
 	  table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
 	  table.addCell("N° Candidat");
 	  table.addCell("Nom");
 	  table.addCell("Prenom");
-	  table.addCell("Ville");
-	  table.addCell("Etablissement");
 	  table.addCell("Type de diplome");
 	  table.addCell("Diplome");
 	  table.addCell("Specialité");
-	  table.addCell("Note dossier");
 	  table.setHeaderRows(1);
 	  PdfPCell[] cells = table.getRow(0).getCells(); 
 	  for (int j = 0; j < cells.length; j++) {
@@ -265,12 +308,9 @@ public class CandidatController {
 		  table.addCell(candidat.getNum());
 		  table.addCell(candidat.getNom());
 		  table.addCell(candidat.getPrenom());
-		  table.addCell(candidat.getVille());
-		  table.addCell(candidat.getEtablissement());
 		  table.addCell(candidat.getType_diplome());
 		  table.addCell(candidat.getDiplome());
 		  table.addCell(candidat.getSpecialite());
-		  table.addCell(String.valueOf(candidat.getNote_dossier()));
 	  }
 	  
 	  PdfWriter.getInstance(document, new FileOutputStream(path));
@@ -294,6 +334,8 @@ public class CandidatController {
 											 rs.getString(7), 
 											 rs.getString(9), 
 											 rs.getDouble(10));
+			candidat.setNote_test_ecrit(rs.getDouble(11));
+			candidat.setNote_test_orale(rs.getDouble(12));
 			candidat.setId(rs.getInt(1));
 			candidats.add(candidat);
 		} 
@@ -306,17 +348,21 @@ public class CandidatController {
 		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
 		ResultSet rs = ps.executeQuery();
 		while(rs.next()) {
-			Candidat candidat = new Candidat(rs.getString(2), 
-											 rs.getString(3), 
-											 rs.getString(4), 
-											 rs.getString(5), 
-											 rs.getString(6), 
-											 rs.getString(8), 
-											 rs.getString(7), 
-											 rs.getString(9), 
-											 rs.getDouble(10));
-			candidat.setId(rs.getInt(1));
-			candidats.add(candidat);
+			if(rs.getDouble(13) > 0) {
+				Candidat candidat = new Candidat(rs.getString(2), 
+												 rs.getString(3), 
+												 rs.getString(4), 
+												 rs.getString(5), 
+												 rs.getString(6), 
+												 rs.getString(8), 
+												 rs.getString(7), 
+												 rs.getString(9), 
+												 rs.getDouble(10));
+				candidat.setNote_test_ecrit(rs.getDouble(11));
+				candidat.setNote_test_orale(rs.getDouble(12));
+				candidat.setId(rs.getInt(1));
+				candidats.add(candidat);
+			}
 		} 
 		return candidats;
 	}
@@ -336,6 +382,8 @@ public class CandidatController {
 											 rs.getString(7), 
 											 rs.getString(9), 
 											 rs.getDouble(10));
+			candidat.setNote_test_ecrit(rs.getDouble(11));
+			candidat.setNote_test_orale(rs.getDouble(12));
 			candidat.setId(rs.getInt(1));
 			candidats.add(candidat);
 		} 
@@ -348,19 +396,34 @@ public class CandidatController {
 		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
 		ResultSet rs = ps.executeQuery();
 		while(rs.next()) {
-			Candidat candidat = new Candidat(rs.getString(2), 
-											 rs.getString(3), 
-											 rs.getString(4), 
-											 rs.getString(5), 
-											 rs.getString(6), 
-											 rs.getString(8), 
-											 rs.getString(7), 
-											 rs.getString(9), 
-											 rs.getDouble(10));
-			candidat.setId(rs.getInt(1));
-			candidats.add(candidat);
+			if(rs.getDouble(12) > 0) {
+				Candidat candidat = new Candidat(rs.getString(2), 
+												 rs.getString(3), 
+												 rs.getString(4), 
+												 rs.getString(5), 
+												 rs.getString(6), 
+												 rs.getString(8), 
+												 rs.getString(7), 
+												 rs.getString(9), 
+												 rs.getDouble(10));
+				candidat.setNote_test_ecrit(rs.getDouble(11));
+				candidat.setNote_test_orale(rs.getDouble(12));
+				candidat.setId(rs.getInt(1));
+				candidats.add(candidat);
+			}
 		} 
 		return candidats;
+	}
+	
+	public static ArrayList<String> getNumCandidats() throws SQLException {
+		ArrayList<String> numCandidats = new ArrayList<>();
+		String stmt = "SELECT num FROM candidats WHERE passe_orale = 1 AND note_test_ecrit IS NOT NULL";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			numCandidats.add(rs.getString(1));
+		} 
+		return numCandidats;
 	}
 
 }

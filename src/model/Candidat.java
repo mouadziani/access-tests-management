@@ -13,6 +13,7 @@ public class Candidat implements Comparable<Candidat> {
 	private String specialite;
 	private double note_dossier;
 	private double note_test_ecrit;
+	private double note_test_orale;
 	private double passe_ecrit;
 	private double passe_orale;
 	private Jury jury;
@@ -121,6 +122,14 @@ public class Candidat implements Comparable<Candidat> {
 
 	public void setNote_test_ecrit(double note_test_ecrit) {
 		this.note_test_ecrit = note_test_ecrit;
+	}
+	
+	public double getNote_test_orale() {
+		return note_test_orale;
+	}
+
+	public void setNote_test_orale(double note_test_orale) {
+		this.note_test_orale = note_test_orale;
 	}
 
 	public double getPasse_ecrit() {

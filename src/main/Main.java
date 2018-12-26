@@ -6,6 +6,8 @@ import java.awt.Toolkit;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import GUI.FramAffectationNoteOrale;
+import GUI.FramCandidatsPassOrale;
 import GUI.FramCandidatsPasseEcrite;
 import GUI.FramCandidatsPreselectione;
 import GUI.FramGestionJuries;
@@ -24,7 +26,7 @@ public class Main {
 				| UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		FramGestionJuries main = new FramGestionJuries();
+		FramCandidatsPassOrale main = new FramCandidatsPassOrale();
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		main.setLocation(dim.width/2-main.getSize().width/2, dim.height/2-main.getSize().height/2);
 		main.setVisible(true);

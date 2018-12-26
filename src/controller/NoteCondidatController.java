@@ -42,13 +42,13 @@ public class NoteCondidatController {
             double noteCurrentCandidat = Double.parseDouble(row.getCell(1).getStringCellValue());
             
             System.out.println(numCurrentCandidat + " " + noteCurrentCandidat);
-            candidats.add(setNoteToCandidat(numCurrentCandidat, noteCurrentCandidat));
+            candidats.add(setNoteEcritToCandidat(numCurrentCandidat, noteCurrentCandidat));
         }
         
         return candidats;
 	}
 	
-	public static Candidat setNoteToCandidat(String numCandidat, Double noteCandidat) throws SQLException {
+	public static Candidat setNoteEcritToCandidat(String numCandidat, Double noteCandidat) throws SQLException {
 		Candidat candidat = new Candidat();
 		String stmt = "SELECT * FROM candidats WHERE num = ?";
 		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
@@ -72,6 +72,17 @@ public class NoteCondidatController {
 			ps.setDouble(1, candidats.get(numCandidat));
 			ps.executeUpdate();
 		}
+		ps.close();
+	}
+	
+	public static void setNoteOraleToCandidat(String numCandidat, Double noteCandidat) throws SQLException {
+		PreparedStatement ps = null;
+		String stmt = "UPDATE candidats SET note_test_orale  = ? WHERE num = ?";
+		ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ps.setString(2, numCandidat);
+		ps.setDouble(1, noteCandidat);
+		int result = ps.executeUpdate();
+		System.out.println(result);
 		ps.close();
 	}
 	
