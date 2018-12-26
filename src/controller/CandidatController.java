@@ -112,6 +112,7 @@ public class CandidatController {
 											 rs.getString(7), 
 											 rs.getString(9), 
 											 rs.getDouble(10));
+			candidat.setId(rs.getInt(1));
 			candidats.add(candidat);
 		} 
 		return candidats;
@@ -276,6 +277,90 @@ public class CandidatController {
 	  document.open();
 	  document.add(table);
 	  document.close();
+	}
+	
+	public static LinkedList<Candidat> getCandidatsCanPassingOrale() throws SQLException {
+		LinkedList<Candidat> candidats = new LinkedList<>();
+		String stmt = "SELECT * FROM candidats WHERE passe_orale = 1";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			Candidat candidat = new Candidat(rs.getString(2), 
+											 rs.getString(3), 
+											 rs.getString(4), 
+											 rs.getString(5), 
+											 rs.getString(6), 
+											 rs.getString(8), 
+											 rs.getString(7), 
+											 rs.getString(9), 
+											 rs.getDouble(10));
+			candidat.setId(rs.getInt(1));
+			candidats.add(candidat);
+		} 
+		return candidats;
+	}
+	
+	public static LinkedList<Candidat> getCandidatsPassedOrale() throws SQLException {
+		LinkedList<Candidat> candidats = new LinkedList<>();
+		String stmt = "SELECT * FROM candidats WHERE passe_orale = 1 AND note_test_orale IS NOT NULL";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			Candidat candidat = new Candidat(rs.getString(2), 
+											 rs.getString(3), 
+											 rs.getString(4), 
+											 rs.getString(5), 
+											 rs.getString(6), 
+											 rs.getString(8), 
+											 rs.getString(7), 
+											 rs.getString(9), 
+											 rs.getDouble(10));
+			candidat.setId(rs.getInt(1));
+			candidats.add(candidat);
+		} 
+		return candidats;
+	}
+	
+	public static LinkedList<Candidat> getCandidatsCanPassingEcrit() throws SQLException {
+		LinkedList<Candidat> candidats = new LinkedList<>();
+		String stmt = "SELECT * FROM candidats WHERE passe_ecrit = 1";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			Candidat candidat = new Candidat(rs.getString(2), 
+											 rs.getString(3), 
+											 rs.getString(4), 
+											 rs.getString(5), 
+											 rs.getString(6), 
+											 rs.getString(8), 
+											 rs.getString(7), 
+											 rs.getString(9), 
+											 rs.getDouble(10));
+			candidat.setId(rs.getInt(1));
+			candidats.add(candidat);
+		} 
+		return candidats;
+	}
+	
+	public static LinkedList<Candidat> getCandidatsPassedEcrit() throws SQLException {
+		LinkedList<Candidat> candidats = new LinkedList<>();
+		String stmt = "SELECT * FROM candidats WHERE passe_ecrit = 1 AND note_test_ecrit IS NOT NULL";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			Candidat candidat = new Candidat(rs.getString(2), 
+											 rs.getString(3), 
+											 rs.getString(4), 
+											 rs.getString(5), 
+											 rs.getString(6), 
+											 rs.getString(8), 
+											 rs.getString(7), 
+											 rs.getString(9), 
+											 rs.getDouble(10));
+			candidat.setId(rs.getInt(1));
+			candidats.add(candidat);
+		} 
+		return candidats;
 	}
 
 }

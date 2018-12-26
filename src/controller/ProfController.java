@@ -70,4 +70,64 @@ public class ProfController {
 		return false;
 	}
 	
+	public static LinkedList<Professeur> getProfsHasNoJury() throws SQLException {
+		LinkedList<Professeur> professeurs = new LinkedList<>();
+		String stmt = "SELECT * FROM professeurs WHERE jury_id IS NULL";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			Professeur professeur = new Professeur(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+			professeur.setId(rs.getInt(1));
+			professeurs.add(professeur);
+		} 
+		return professeurs;
+	}
+	
+	public static LinkedList<Professeur> getProfsHasJury() throws SQLException {
+		LinkedList<Professeur> professeurs = new LinkedList<>();
+		String stmt = "SELECT * FROM professeurs WHERE jury_id IS NOT NULL";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			Professeur professeur = new Professeur(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+			professeurs.add(professeur);
+		} 
+		return professeurs;
+	}
+	
+	public static LinkedList<Professeur> getProfsJury(int idJury) throws SQLException {
+		LinkedList<Professeur> professeurs = new LinkedList<>();
+		String stmt = "SELECT * FROM professeurs WHERE jury_id = ?";
+		PreparedStatement ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ps.setInt(1, idJury);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			Professeur professeur = new Professeur(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+			professeur.setId(rs.getInt(1));
+			professeurs.add(professeur);
+		} 
+		return professeurs;
+	}
+	
+	public static void setProfToJury(int idProf, int idJury) throws SQLException {
+		String stmt;
+		PreparedStatement ps = null;
+		stmt = "UPDATE professeurs SET jury_id = ? WHERE id = ?";
+		ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ps.setInt(1, idJury);
+		ps.setInt(2, idProf);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
+	public static void removeProfFromJury(int idProf) throws SQLException {
+		String stmt;
+		PreparedStatement ps = null;
+		stmt = "UPDATE professeurs SET jury_id = NULL WHERE id = ?";
+		ps = SingletonConnection.getConnection().prepareStatement(stmt);
+		ps.setInt(1, idProf);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
 }
